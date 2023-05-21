@@ -6,7 +6,6 @@ repository: https://github.com/my_org/my_repo
 environment:
   sdk: ^3.0.0
 
-# Add regular dependencies here.
 dependencies:
   http: ^0.13.6
   json_annotation: ^4.8.1
