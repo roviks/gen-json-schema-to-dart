@@ -1,0 +1,19 @@
+name: zegen
+description: The ZEGEN library provides a mechanism to generate code from JSON Schema to Dart
+version: 1.0.0
+repository: https://github.com/my_org/my_repo
+
+environment:
+  sdk: ^3.0.0
+
+# Add regular dependencies here.
+dependencies:
+  http: ^0.13.6
+  json_annotation: ^4.8.1
+  json_schema2: ^2.0.4+5
+
+dev_dependencies:
+  build_runner: ^2.4.4
+  lints: ^2.0.0
+  test: ^1.21.0
+  json_serializable: ^6.7.0
