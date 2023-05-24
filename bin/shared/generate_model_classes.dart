@@ -4,12 +4,14 @@ void generateModelClasses(
   JsonSchema schema, {
   required String className,
   String? outputPath,
+  dynamic method,
+  bool? isParams,
+  bool? isResult,
   String? outputFile,
   FileMode fileMode = FileMode.append,
   bool isTopLevel = false,
 }) {
   final buffer = StringBuffer();
-
   final normalizedClassName = normalizeMethodName(className);
 
   if (schema.properties.isNotEmpty) {
@@ -22,11 +24,18 @@ void generateModelClasses(
 
     buffer.writeln();
     buffer.writeln('@JsonSerializable()');
+  } else {
+    if (isParams == true) {
+      method['isParamsEmpty'] = true;
+    }
+    if (isResult == true) {
+      method['isResultEmpty'] = true;
+    }
   }
   buffer.writeln('class $normalizedClassName {');
 
   if (schema.properties.isNotEmpty) {
-    buffer.writeln('   $normalizedClassName({');
+    buffer.writeln('  const $normalizedClassName({');
     schema.properties.forEach((key, value) {
       final propertySchema = schema.properties[key];
 
@@ -42,7 +51,7 @@ void generateModelClasses(
     buffer.writeln('  });');
     buffer.writeln();
   } else {
-    buffer.writeln('   const $normalizedClassName();');
+    buffer.writeln('  const $normalizedClassName();');
   }
 
   schema.properties.forEach((key, value) {
@@ -56,14 +65,16 @@ void generateModelClasses(
         key: key,
       );
       if (isChild == true) {
-        final childClassName = '${className}_${key.toLowerCase()}';
+        final childClassName = '${className}_$key';
 
         generateModelClasses(
           propertySchema,
           className: childClassName,
+          method: method,
           outputPath: outputPath,
+          isParams: isParams,
+          isResult: isResult,
           outputFile: outputFile ?? className,
-          fileMode: FileMode.append,
         );
       }
       final isRequired = schema.requiredProperties?.contains(key);
@@ -84,9 +95,8 @@ void generateModelClasses(
 
   buffer.writeln('}');
 
-  final generatedCode = buffer.toString();
-
   insertContentAtBeginning(
-      "$outputPath/${camelCaseToSnakeCase(outputFile ?? className)}.dart",
-      generatedCode);
+    "$outputPath/${camelCaseToSnakeCase(outputFile ?? className)}.dart",
+    buffer.toString(),
+  );
 }

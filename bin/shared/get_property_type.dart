@@ -23,6 +23,7 @@ part of "../cli.dart";
     return ('bool', null);
   } else if (type == SchemaType.array) {
     final itemsSchema = propertySchema.items;
+
     if (itemsSchema == null) {
       return ("List<dynamic>", null);
     }
